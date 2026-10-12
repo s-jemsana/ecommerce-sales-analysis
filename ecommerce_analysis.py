@@ -107,6 +107,39 @@ df["month"] = df["order_date"].dt.month
 df["month_year"] = df["order_date"].dt.to_period("M")
 
 #=======================================================================
+# 6. CORE KPI ANALYSIS
+#=======================================================================
+
+# Calculate the key performance indicators
+# Currency is unspecified in the source dataset
+
+total_revenue = df["revenue"].sum()
+total_orders = df["order_id"].nunique()
+unique_customers = df["customer_id"].nunique()
+total_quantity_sold = df["quantity"].sum()
+
+average_order_value = total_revenue / total_orders
+average_order_per_customer = total_orders / unique_customers
+average_discount = df["discount"].mean() * 100
+average_customer_rating = df["customer_rating"].mean()
+average_delivery_time = df["delivery_days"].mean()
+
+# Display the KPIs
+print("\n" + "=" * 60)
+print("CORE E-COMMERCE KPIs")
+print("=" * 60)
+
+print(f"Total Revenue:                  {total_revenue:,.2f}")
+print(f"Total Orders:                   {total_orders:,}")
+print(f"Unique Customers:               {unique_customers:,}")
+print(f"Total Quantity Sold:            {total_quantity_sold:,}")
+print(f"Average Order Value:            {average_order_value:,.2f}")
+print(f"Average Orders per Customer:    {average_order_per_customer:.2f}")
+print(f"Average Discount:               {average_discount:.2f}%")
+print(f"Average Customer Rating:        {average_customer_rating:.2f} / 5")
+print(f"Average Delivery Time:          {average_delivery_time:.2f} days")
+
+#=======================================================================
 # 6. DATASET SUMMARY
 #=======================================================================
 
@@ -137,24 +170,8 @@ print(f"Payment methods: "
       f"{df['payment_method'].nunique()}")
 
 #=======================================================================
-# DATA PREVIEW
+# 7. DATA PREVIEW
 #=======================================================================
 
 print("\nFirst 5 rows:")
 print(df.head())
-
-# 3. Advanced Aggregation & Insights
-# KPI 1: Total Revenue
-total_revenue = df["revenue"].sum()
-print(f"Total Revenue: ${total_revenue:,.2f}")
-
-# KPI 2: Sales by Region
-print("\n Revenue by Region")
-region_sales = df.groupby("region")["revenue"].sum().sort_values(ascending=False)
-print(region_sales.apply(lambda x: f"${x:,.2f}"))
-
-# KPI 3: Logistics & Satisfaction
-avg_metrics = df[["delivery_days", "customer_rating"]].mean().round(2)
-print("\n Operationsl Averages:")
-print(f"Average Delivery Time: {avg_metrics['delivery_days']} days")
-print(f"Average Customer Rating: {avg_metrics['customer_rating']} / 5.0")
